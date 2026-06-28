@@ -1,0 +1,3062 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>育见 - 亲子成长 AI App 高保真原型</title>
+  <style>
+    :root {
+      --green: #9dcc75;
+      --green-deep: #6f9f56;
+      --green-soft: #f1f8df;
+      --mint: #eef7cf;
+      --butter: #f6edb4;
+      --butter-soft: #fbf7dc;
+      --purple: #d5c96e;
+      --purple-soft: #fbf6d9;
+      --ink: #202633;
+      --ink-soft: #6f7480;
+      --muted: #9ca0a8;
+      --card: rgba(255, 255, 247, 0.88);
+      --line: rgba(73, 91, 45, 0.08);
+      --shadow-card: 0 18px 46px rgba(31, 39, 51, 0.045);
+      --shadow-soft: none;
+      --radius-card: 28px;
+      --radius-row: 24px;
+      --radius-pill: 999px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --keyboard-offset: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior-x: none;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 75% 12%, rgba(171, 221, 108, 0.26), transparent 31%),
+        radial-gradient(circle at 12% 8%, rgba(247, 231, 143, 0.36), transparent 30%),
+        #f8f6e9;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      touch-action: pan-y;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    svg {
+      display: block;
+    }
+
+    .app-shell {
+      width: min(100%, 430px);
+      max-width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto auto;
+      background:
+        radial-gradient(circle at 76% 12%, rgba(162, 216, 103, 0.34), transparent 31%),
+        radial-gradient(circle at 12% 22%, rgba(247, 233, 154, 0.42), transparent 30%),
+        radial-gradient(circle at 58% 52%, rgba(238, 247, 207, 0.72), transparent 38%),
+        linear-gradient(180deg, #fbfaec 0%, #f8f6e5 52%, #f6f4e6 100%);
+    }
+
+    .status-bar {
+      height: 42px;
+      padding: 12px 30px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #0f1116;
+      font-size: 17px;
+      font-weight: 720;
+      letter-spacing: 0;
+      z-index: 6;
+    }
+
+    .status-icons {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .signal {
+      width: 22px;
+      height: 13px;
+      display: grid;
+      grid-template-columns: repeat(4, 4px);
+      gap: 2px;
+      align-items: end;
+    }
+
+    .signal span {
+      width: 4px;
+      border-radius: 3px;
+      background: currentColor;
+    }
+
+    .signal span:nth-child(1) { height: 5px; }
+    .signal span:nth-child(2) { height: 8px; }
+    .signal span:nth-child(3) { height: 11px; }
+    .signal span:nth-child(4) { height: 13px; }
+
+    .wifi {
+      width: 19px;
+      height: 14px;
+      position: relative;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 3px solid currentColor;
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+    }
+
+    .wifi::before {
+      width: 20px;
+      height: 20px;
+      top: 0;
+    }
+
+    .wifi::after {
+      width: 11px;
+      height: 11px;
+      top: 6px;
+    }
+
+    .battery {
+      width: 25px;
+      height: 13px;
+      border: 2px solid currentColor;
+      border-radius: 4px;
+      position: relative;
+      padding: 2px;
+    }
+
+    .battery::before {
+      content: "";
+      width: 3px;
+      height: 6px;
+      position: absolute;
+      right: -5px;
+      top: 2px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .battery::after {
+      content: "";
+      display: block;
+      width: 14px;
+      height: 100%;
+      border-radius: 2px;
+      background: currentColor;
+    }
+
+    .child-pill {
+      min-height: 44px;
+      border-radius: var(--radius-pill);
+      padding: 6px 13px 6px 7px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--ink);
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      font-size: 16px;
+      font-weight: 620;
+      white-space: nowrap;
+    }
+
+    .child-name {
+      max-width: 62px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .avatar-face {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #fbf0b8, #dff0a9);
+      font-size: 21px;
+    }
+
+    .chevron {
+      width: 14px;
+      height: 14px;
+      flex: 0 0 auto;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--ink-soft);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow-soft);
+      border: 0;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+      stroke-width: 2;
+    }
+
+    .page-stack {
+      min-height: 0;
+      overflow: hidden;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+      position: relative;
+    }
+
+    .page {
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior-x: none;
+      touch-action: pan-y;
+      position: relative;
+      display: none;
+      padding: 10px 20px 18px;
+      scrollbar-width: none;
+    }
+
+    .page::-webkit-scrollbar {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .page.page-entering .hero-card,
+    .page.page-entering .section,
+    .page.page-entering .task-card,
+    .page.page-entering .profile-block,
+    .page.page-entering .profile-data-card,
+    .page.page-entering .flow-card,
+    .page.page-entering .feedback-panel,
+    .page.page-entering .scenario-card,
+    .page.page-entering .rehearsal-header {
+      animation: page-rise 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .page.page-entering .section:nth-of-type(2),
+    .page.page-entering .task-card:nth-child(2),
+    .page.page-entering .profile-data-card:nth-child(2),
+    .page.page-entering .profile-block:nth-child(2),
+    .page.page-entering .scenario-card:nth-child(2) {
+      animation-delay: 35ms;
+    }
+
+    .page.page-entering .section:nth-of-type(3),
+    .page.page-entering .task-card:nth-child(3),
+    .page.page-entering .profile-data-card:nth-child(3),
+    .page.page-entering .profile-block:nth-child(3),
+    .page.page-entering .scenario-card:nth-child(3) {
+      animation-delay: 70ms;
+    }
+
+    .page.page-entering .section:nth-of-type(4),
+    .page.page-entering .task-card:nth-child(4),
+    .page.page-entering .profile-data-card:nth-child(4),
+    .page.page-entering .profile-block:nth-child(4),
+    .page.page-entering .scenario-card:nth-child(4) {
+      animation-delay: 105ms;
+    }
+
+    @keyframes page-rise {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.992);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hero-card,
+    .soft-card,
+    .list-card,
+    .task-card,
+    .profile-block,
+    .feedback-panel,
+    .scenario-card,
+    .rehearsal-header {
+      background: var(--card);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 0;
+      background-clip: padding-box;
+    }
+
+    .hero-card {
+      min-height: 206px;
+      border-radius: 31px;
+      position: relative;
+      overflow: hidden;
+      padding: 26px 28px;
+      display: grid;
+      align-content: center;
+      isolation: isolate;
+      margin-bottom: 16px;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 80% 46%, rgba(155, 214, 110, 0.48), transparent 34%),
+        radial-gradient(circle at 84% 28%, rgba(248, 237, 159, 0.72), transparent 23%),
+        radial-gradient(circle at 10% 10%, rgba(255, 250, 220, 0.96), transparent 44%);
+      z-index: -2;
+    }
+
+    .hero-title {
+      width: 60%;
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.28;
+      font-weight: 820;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      width: 58%;
+      margin: 12px 0 0;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.58;
+      font-weight: 470;
+    }
+
+    .hero-title,
+    .hero-copy {
+      position: relative;
+      z-index: 1;
+    }
+
+    .mascot {
+      width: 190px;
+      height: 168px;
+      position: absolute;
+      right: -14px;
+      bottom: -2px;
+      overflow: hidden;
+      background: url("bean_mascot_user.png") center bottom / contain no-repeat;
+      box-shadow: none;
+      transform: none;
+      filter: drop-shadow(0 18px 22px rgba(75, 139, 68, 0.13));
+      z-index: 0;
+    }
+
+    .mascot::before {
+      content: none;
+    }
+
+    .mascot::after {
+      content: none;
+    }
+
+    .mascot-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(0 18px 28px rgba(105, 183, 143, 0.12));
+    }
+
+    .face-eye {
+      display: none;
+    }
+
+    .face-mouth {
+      display: none;
+    }
+
+    .section {
+      margin-top: 16px;
+    }
+
+    .section:first-child {
+      margin-top: 0;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 18px;
+      font-weight: 780;
+      color: var(--ink);
+    }
+
+    .section-note,
+    .boundary-note,
+    .hint-text {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .message-row {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      display: grid;
+      margin-bottom: 14px;
+      animation: rise 240ms ease both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message-row.ai {
+      justify-items: stretch;
+    }
+
+    .message-row.user {
+      justify-items: end;
+    }
+
+    .bubble {
+      max-width: 86%;
+      min-width: 0;
+      border-radius: 24px;
+      padding: 15px;
+      color: var(--ink);
+      background: var(--card);
+      border: 0;
+      background-clip: padding-box;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow: hidden;
+      box-shadow: none;
+    }
+
+    .ai .bubble {
+      width: 100%;
+      max-width: 100%;
+      border-top-left-radius: 10px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      box-shadow: none;
+      backdrop-filter: blur(18px) saturate(1.25);
+      -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    }
+
+    .user .bubble {
+      max-width: min(72%, 292px);
+      color: #fff;
+      background: linear-gradient(135deg, #a7d77a, #7fb964);
+      border-top-right-radius: 10px;
+      box-shadow: none;
+    }
+
+    .chat-feed,
+    .simulation-feed {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      overflow-x: hidden;
+    }
+
+    .bubble-section + .bubble-section {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(73, 91, 45, 0.08);
+    }
+
+    .section-label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--green-deep);
+      font-size: 13px;
+      font-weight: 760;
+    }
+
+    .section-body {
+      line-height: 1.62;
+    }
+
+    .section-body p {
+      margin: 0;
+    }
+
+    .section-body p + p {
+      margin-top: 9px;
+    }
+
+    .bubble-list {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .bubble-list li + li {
+      margin-top: 7px;
+    }
+
+    .quote-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .quote-line {
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 16px;
+      color: var(--ink);
+      background: rgba(241, 248, 223, 0.72);
+      border-left: 3px solid rgba(111, 159, 86, 0.32);
+    }
+
+    .section-footnote {
+      margin: 9px 0 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+
+    .thinking-bubble {
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .thinking-panel {
+      display: grid;
+      gap: 10px;
+    }
+
+    .thinking-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .profile-stream {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .profile-chip {
+      min-width: 0;
+      padding: 9px 10px;
+      border-radius: 16px;
+      background: rgba(241, 248, 223, 0.7);
+      border: 1px solid rgba(111, 159, 86, 0.1);
+      animation: chipFloat 2.8s ease-in-out infinite;
+    }
+
+    .profile-chip:nth-child(2) { animation-delay: 0.18s; }
+    .profile-chip:nth-child(3) { animation-delay: 0.36s; }
+    .profile-chip:nth-child(4) { animation-delay: 0.54s; }
+
+    .profile-chip span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .profile-chip strong {
+      display: block;
+      margin-top: 2px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 760;
+      line-height: 1.35;
+    }
+
+    @keyframes chipFloat {
+      0%, 100% { transform: translateY(0); opacity: 0.82; }
+      50% { transform: translateY(-2px); opacity: 1; }
+    }
+
+    .suggestion-strip,
+    .choice-row,
+    .layer-tags,
+    .end-actions {
+      max-width: 100%;
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      overflow-x: hidden;
+      scrollbar-width: none;
+    }
+
+    .suggestion-strip::-webkit-scrollbar,
+    .choice-row::-webkit-scrollbar,
+    .layer-tags::-webkit-scrollbar,
+    .end-actions::-webkit-scrollbar {
+      display: none;
+    }
+
+    .suggestion-strip {
+      margin-top: 14px;
+    }
+
+    .pill,
+    .choice-button,
+    .tag,
+    .secondary-button,
+    .primary-button {
+      min-height: 34px;
+      padding: 7px 13px;
+      border-radius: var(--radius-pill);
+      color: var(--green-deep);
+      background: var(--green-soft);
+      max-width: 100%;
+      white-space: normal;
+      flex: 0 1 auto;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    .pill.primary,
+    .choice-button.selected,
+    .primary-button {
+      color: #fff;
+      background: linear-gradient(135deg, #a7d77a, #7fb964);
+      box-shadow: none;
+    }
+
+    .thinking {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-soft);
+      font-size: 15px;
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+
+    .thinking-dots i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: bounce 1.1s infinite ease-in-out;
+    }
+
+    .thinking-dots i:nth-child(2) { animation-delay: 0.14s; }
+    .thinking-dots i:nth-child(3) { animation-delay: 0.28s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-3px); }
+    }
+
+    .task-card,
+    .profile-block,
+    .feedback-panel,
+    .scenario-card,
+    .rehearsal-header {
+      width: 100%;
+      border-radius: var(--radius-row);
+      padding: 17px;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .task-card + .task-card,
+    .profile-block + .profile-block,
+    .scenario-card + .scenario-card {
+      margin-top: 14px;
+    }
+
+    #taskList {
+      display: grid;
+      gap: 14px;
+    }
+
+    .task-item {
+      display: grid;
+      gap: 10px;
+    }
+
+    .task-card.selected,
+    .scenario-card.active {
+      outline: 2px solid rgba(111, 166, 95, 0.34);
+    }
+
+    .task-title,
+    .feedback-title,
+    .layer-title,
+    .scenario-title,
+    .hint-block-title,
+    .rehearsal-header h2,
+    .profile-block h3 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 780;
+      color: var(--ink);
+    }
+
+    .task-source,
+    .task-meta,
+    .scenario-desc,
+    .hint-block-text,
+    .profile-block p,
+    .profile-block li,
+    .rehearsal-header p {
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .task-source {
+      display: block;
+      margin-top: 6px;
+    }
+
+    .task-meta {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-tag {
+      min-height: 30px;
+      padding: 6px 11px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--green-deep);
+      background: var(--green-soft);
+      font-size: 13px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .status-caret {
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+    }
+
+    .status-caret.up {
+      border-bottom: 5px solid currentColor;
+    }
+
+    .status-caret.down {
+      border-top: 5px solid currentColor;
+    }
+
+    .task-feedback-panel {
+      padding: 16px;
+      border-radius: 24px;
+      color: rgba(32, 38, 51, 0.72);
+      background: rgba(241, 248, 223, 0.72);
+      border: 1px solid rgba(111, 159, 86, 0.10);
+      box-shadow: none;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .task-feedback-panel .feedback-title {
+      color: rgba(32, 38, 51, 0.78);
+    }
+
+    .task-feedback-panel .feedback-question {
+      color: rgba(111, 116, 128, 0.72);
+    }
+
+    .task-feedback-panel .feedback-note {
+      color: rgba(32, 38, 51, 0.7);
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: none;
+    }
+
+    .feedback-group + .feedback-group {
+      margin-top: 14px;
+    }
+
+    .feedback-question {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .feedback-note,
+    .custom-scene-input {
+      width: 100%;
+      min-height: 92px;
+      border: 0;
+      outline: 0;
+      resize: none;
+      border-radius: 22px;
+      padding: 14px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow-soft);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .feedback-note::placeholder,
+    .custom-scene-input::placeholder {
+      color: var(--muted);
+    }
+
+    .custom-scenario {
+      cursor: default;
+    }
+
+    .custom-scenario .custom-scene-input {
+      margin-top: 12px;
+      min-height: 82px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: none;
+    }
+
+    .simulation-start-actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .feedback-actions,
+    .end-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .wide-button {
+      width: 100%;
+      margin-top: 12px;
+      justify-content: center;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .scenario-grid,
+    .simulation-layout,
+    .layer-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .scenario-title,
+    .scenario-desc {
+      display: block;
+    }
+
+    .hint-block {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 18px;
+      background: var(--green-soft);
+    }
+
+    .hint-block-title {
+      font-size: 14px;
+    }
+
+    .hint-block-text {
+      margin: 4px 0 0;
+    }
+
+    .profile-block ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .tag {
+      display: inline-flex;
+      margin-right: 6px;
+      margin-top: 6px;
+      color: var(--green-deep);
+      background: var(--green-soft);
+    }
+
+    .recording-panel {
+      display: none;
+      padding: 10px 20px;
+      z-index: 8;
+    }
+
+    .recording-panel.active {
+      display: block;
+    }
+
+    .recording-card {
+      max-width: 250px;
+      margin: 0 auto;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-card);
+      padding: 13px;
+      text-align: center;
+    }
+
+    .wave {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      color: var(--green);
+    }
+
+    .wave span {
+      width: 5px;
+      border-radius: 99px;
+      background: currentColor;
+      animation: wave 0.9s infinite ease-in-out;
+    }
+
+    .wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .wave span:nth-child(2) { height: 16px; animation-delay: 0.08s; }
+    .wave span:nth-child(3) { height: 26px; animation-delay: 0.16s; }
+    .wave span:nth-child(4) { height: 34px; animation-delay: 0.24s; }
+    .wave span:nth-child(5) { height: 26px; animation-delay: 0.32s; }
+    .wave span:nth-child(6) { height: 16px; animation-delay: 0.4s; }
+    .wave span:nth-child(7) { height: 8px; animation-delay: 0.48s; }
+
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.55); opacity: 0.55; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    .recording-text {
+      margin: 6px 0 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .cancel-hint {
+      margin: 2px 0 0;
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    .input-zone {
+      padding: 8px 20px 10px;
+      z-index: 9;
+    }
+
+    .input-bar {
+      min-height: 54px;
+      display: grid;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .voice-mode {
+      grid-template-columns: 1fr 52px;
+    }
+
+    .text-mode {
+      grid-template-columns: 52px 1fr 52px;
+    }
+
+    .hold-button,
+    .mode-button,
+    .send-button {
+      min-height: 52px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: var(--green-deep);
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: none;
+    }
+
+    .hold-button {
+      color: #fff;
+      grid-auto-flow: column;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #a7d77a, #7fb964);
+      font-weight: 780;
+      box-shadow: none;
+    }
+
+    .send-button {
+      color: #fff;
+      background: linear-gradient(135deg, #a7d77a, #7fb964);
+    }
+
+    .send-button:disabled {
+      color: #b5b8be;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: none;
+    }
+
+    .text-input-wrap {
+      min-height: 52px;
+      border-radius: 18px;
+      padding: 13px 15px;
+      display: grid;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.84);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 24px;
+      max-height: 112px;
+      border: 0;
+      outline: none;
+      resize: none;
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 15px;
+      line-height: 24px;
+    }
+
+    .text-input::placeholder {
+      color: var(--muted);
+    }
+
+    .bottom-tabs-wrap {
+      padding: 0 16px calc(10px + var(--safe-bottom));
+      z-index: 10;
+      transform: translateY(0);
+      transition: transform 0.18s ease;
+      will-change: transform;
+    }
+
+    body.keyboard-open .bottom-tabs-wrap {
+      pointer-events: none;
+      transform: translateY(var(--keyboard-offset));
+    }
+
+    .bottom-tabs {
+      height: 68px;
+      border-radius: 24px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      box-shadow: none;
+      backdrop-filter: blur(22px) saturate(1.35);
+      -webkit-backdrop-filter: blur(22px) saturate(1.35);
+    }
+
+    .tab-button {
+      width: 25%;
+      height: 56px;
+      min-width: 0;
+      border-radius: 19px;
+      background: transparent;
+      color: rgba(91, 96, 106, 0.58);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      position: relative;
+      transition: color 180ms ease-out, background-color 180ms ease-out, transform 180ms ease-out;
+    }
+
+    .tab-button svg {
+      width: 27px;
+      height: 27px;
+      stroke-width: 2;
+      transition: transform 180ms ease-out, color 180ms ease-out;
+    }
+
+    .tab-button:active {
+      animation: tab-bounce 190ms ease-out;
+    }
+
+    .tab-button.active {
+      color: var(--green-deep);
+      background: rgba(157, 204, 117, 0.14);
+      font-weight: 600;
+    }
+
+    .tab-button.active svg {
+      transform: scale(1.1);
+    }
+
+    .tab-button.active::after {
+      content: none;
+    }
+
+    @keyframes tab-bounce {
+      0% { transform: scale(1); }
+      45% { transform: scale(0.98); }
+      75% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    .tab-label {
+      font-size: 11.5px;
+      line-height: 1.15;
+      white-space: nowrap;
+      letter-spacing: 0;
+      transition: font-weight 180ms ease-out, color 180ms ease-out;
+    }
+
+    .profile-settings-row {
+      min-height: 44px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    .profile-settings-row + .section {
+      margin-top: 4px;
+    }
+
+    .profile-settings-button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--green-deep);
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 5;
+    }
+
+    .profile-settings-button svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .profile-data-grid,
+    .settings-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .profile-data-card,
+    .flow-card,
+    .setting-group,
+    .family-card {
+      border-radius: 24px;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .profile-data-card h3,
+    .setting-group h3,
+    .family-card h3 {
+      margin: 0 0 8px;
+      color: var(--ink);
+      font-size: 16px;
+      font-weight: 780;
+    }
+
+    .profile-data-card p,
+    .flow-card p,
+    .family-card p,
+    .setting-row span,
+    .family-row span {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .flow-steps {
+      display: grid;
+      gap: 8px;
+    }
+
+    .flow-step {
+      min-height: 38px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--green-deep);
+      background: var(--green-soft);
+      font-size: 13px;
+      font-weight: 740;
+      text-align: center;
+    }
+
+    .flow-arrow {
+      color: var(--green-deep);
+      text-align: center;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .family-menu,
+    .settings-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      pointer-events: auto;
+    }
+
+    .family-menu.hidden,
+    .settings-overlay.hidden {
+      display: none !important;
+    }
+
+    .overlay-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(245, 247, 245, 0.58);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .family-popover {
+      width: min(300px, calc(100% - 32px));
+      position: absolute;
+      z-index: 1;
+      top: 104px;
+      right: 16px;
+      border-radius: 28px;
+      padding: 14px;
+      display: grid;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 18px 46px rgba(31, 39, 51, 0.12);
+    }
+
+    .settings-sheet {
+      position: relative;
+      z-index: 1;
+      align-self: end;
+      max-height: calc(100% - 72px);
+      border-radius: 30px 30px 0 0;
+      padding: 18px 20px calc(22px + var(--safe-bottom));
+      overflow-y: auto;
+      background: rgba(250, 251, 249, 0.98);
+      box-shadow: 0 -18px 50px rgba(31, 39, 51, 0.12);
+      scrollbar-width: none;
+    }
+
+    .settings-sheet::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sheet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .sheet-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+      font-weight: 820;
+      color: var(--ink);
+    }
+
+    .sheet-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .setting-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .setting-row,
+    .family-row {
+      width: 100%;
+      min-height: 44px;
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      background: rgba(247, 250, 246, 0.9);
+      text-align: left;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    .setting-row strong,
+    .family-row strong {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 740;
+    }
+
+    .setting-value {
+      color: var(--green-deep);
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 740;
+    }
+
+    .toggle {
+      width: 44px;
+      height: 26px;
+      border-radius: var(--radius-pill);
+      padding: 3px;
+      background: var(--green);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .toggle.off {
+      justify-content: flex-start;
+      background: rgba(78, 82, 91, 0.18);
+    }
+
+    .toggle::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: none;
+    }
+
+    .setting-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .compact-settings {
+      gap: 10px;
+    }
+
+    .logout-row {
+      color: var(--error, #ff3b30);
+      background: rgba(255, 59, 48, 0.07);
+    }
+
+    .logout-row strong,
+    .logout-row .setting-value {
+      color: #d94b42;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 520px) {
+      body {
+        padding: 24px;
+      }
+
+      .app-shell {
+        height: min(920px, calc(100dvh - 48px));
+        border-radius: 42px;
+        border: 1px solid rgba(32, 38, 51, 0.08);
+        box-shadow: 0 28px 70px rgba(32, 38, 51, 0.16);
+      }
+    }
+
+    @media (max-width: 380px) {
+      .page,
+      .input-zone,
+      .bottom-tabs-wrap {
+        padding-inline: 16px;
+      }
+
+      .child-pill {
+        min-height: 40px;
+        padding: 5px 9px 5px 6px;
+      }
+
+      .child-name {
+        display: none;
+      }
+
+      .avatar-face {
+        width: 29px;
+        height: 29px;
+        font-size: 19px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero-title,
+      .hero-copy {
+        width: 62%;
+      }
+
+      .profile-stream {
+        grid-template-columns: 1fr;
+      }
+
+      .mascot {
+        right: -18px;
+        bottom: -2px;
+        transform: scale(0.9) rotate(-4deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell" aria-label="育见亲子成长 AI App 高保真原型">
+    <section class="status-bar" aria-label="设备状态">
+      <span>9:41</span>
+      <span class="status-icons" aria-hidden="true">
+        <span class="signal"><span></span><span></span><span></span><span></span></span>
+        <span class="wifi"></span>
+        <span class="battery"></span>
+      </span>
+    </section>
+
+    <section class="page-stack">
+      <section class="page" id="page-home" data-title="首页" data-state="今日关注">
+        <article class="hero-card">
+          <h2 class="hero-title">今天先从一件小事开始</h2>
+          <p class="hero-copy">首页只放今天最需要看的线索，真正输入仍然回到交流页。</p>
+          <div class="mascot" aria-hidden="true">
+            <span class="face-eye left"></span>
+            <span class="face-eye right"></span>
+            <span class="face-mouth"></span>
+          </div>
+        </article>
+
+        <section class="section">
+          <h2 class="section-title">今日关注</h2>
+          <div class="profile-data-card">
+            <h3>作业启动前容易卡住</h3>
+            <p>最近的记录显示，冲突更常发生在开始前，而不是任务进行中。</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">进行中的任务</h2>
+          <div class="profile-data-card">
+            <h3>睡前 10 分钟倾听</h3>
+            <p>观察目标：孩子是否更愿意说出当天开心或不舒服的事情。</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">画像变化提示</h2>
+          <div class="profile-data-card">
+            <h3>稳定提升中</h3>
+            <p>情绪管理、亲子关系两项反馈更稳定；作业启动仍需继续观察。</p>
+          </div>
+        </section>
+
+        <section class="section">
+          <button class="primary-button wide-button" type="button" id="startFromHome">＋ 说说今天发生了什么</button>
+        </section>
+      </section>
+
+      <section class="page active" id="page-chat" data-title="交流" data-state="从这里开始">
+        <article class="hero-card">
+          <h2 class="hero-title">直接讲孩子今天发生了什么</h2>
+          <p class="hero-copy">不用整理成问题，先把现场过程留下来。</p>
+          <div class="mascot" aria-hidden="true">
+            <span class="face-eye left"></span>
+            <span class="face-eye right"></span>
+            <span class="face-mouth"></span>
+          </div>
+        </article>
+        <div class="chat-feed" id="chatFeed"></div>
+      </section>
+
+      <section class="page" id="page-tasks" data-title="任务" data-state="只反馈">
+        <section class="section">
+          <h2 class="section-title">Task List</h2>
+          <div id="taskList"></div>
+        </section>
+
+        <section class="section" id="taskEmptyState">
+          <div class="profile-block">
+            <h3>暂无任务</h3>
+            <p class="hint-text">任务只能从交流中保存生成。这里不提供编辑或重新生成入口。</p>
+          </div>
+        </section>
+
+      </section>
+
+      <section class="page" id="page-simulation" data-title="演绎" data-state="选择场景">
+        <div class="simulation-layout" id="simulationEntry">
+          <section class="section">
+            <div class="scenario-grid" id="scenarioGrid">
+              <button class="scenario-card active" type="button" data-scenario="写作业前怎么开口" data-summary="今晚 7:40，小树已经拖了快一小时。你提醒过两次，他开始烦。你担心再拖到很晚，想让他开始写作业。">
+                <span class="scenario-title">写作业前怎么开口</span>
+                <span class="scenario-desc">他拖着不开始，你一催就容易吵起来。</span>
+              </button>
+              <button class="scenario-card" type="button" data-scenario="刚吵完怎么修复" data-summary="刚才你们已经吵过一轮，你想重新开口，但担心一说又让他更烦。">
+                <span class="scenario-title">刚吵完怎么修复</span>
+                <span class="scenario-desc">刚才说重了，想重新开口，但怕越说越糟。</span>
+              </button>
+              <button class="scenario-card" type="button" data-scenario="手机规则怎么谈" data-summary="一提手机规则，小树就容易炸。你想谈边界，但不想又变成争吵。">
+                <span class="scenario-title">手机规则怎么谈</span>
+                <span class="scenario-desc">一提手机就炸，想谈规则，又不想变成争吵。</span>
+              </button>
+              <button class="scenario-card" type="button" data-scenario="老师反馈怎么问" data-summary="老师说小树最近有情况，你想问孩子，但担心他觉得自己被告状。">
+                <span class="scenario-title">老师反馈怎么问</span>
+                <span class="scenario-desc">老师说他最近有情况，想问孩子，但怕他觉得被告状。</span>
+              </button>
+              <div class="scenario-card custom-scenario" data-scenario="自定义场景" data-summary="把你想练的情况直接说出来，我会先帮你整理成一个可预演的场景。" role="button" tabindex="0">
+                <span class="scenario-title">自定义场景</span>
+                <span class="scenario-desc">把你想练的情况直接说出来。</span>
+                <textarea class="custom-scene-input" id="simulationSceneInput" rows="3" placeholder="描述一下你想练的场景。例如：今晚作业拖了很久，我想让他开始写，但一说就吵。"></textarea>
+              </div>
+            </div>
+          </section>
+
+          <div class="simulation-start-actions">
+            <button class="primary-button wide-button" type="button" id="startSimulation">开始预演</button>
+            <p class="boundary-note">这里不是预测孩子一定会这样说，而是基于已有记录，帮你提前看见可能的沟通走向。</p>
+          </div>
+        </div>
+
+        <div class="simulation-layout hidden" id="simulationConfirm">
+          <section class="section">
+            <h2 class="section-title">这次先按这个场景来练</h2>
+            <div class="profile-block">
+              <h3>场景摘要：</h3>
+              <p id="simulationSummary">今晚 7:40，小树已经拖了快一小时。你提醒过两次，他开始烦。你担心再拖到很晚，想让他开始写作业。</p>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="profile-block">
+              <h3>我会参考这些理解：</h3>
+              <ul>
+                <li>小树最近几次冲突多发生在作业开始前。</li>
+                <li>他对“被站在旁边盯着”比较敏感。</li>
+                <li>他不一定是不想写，更可能是对“开始之后会被催、被检查、被评价”有防御。</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="section">
+            <div class="profile-block">
+              <h3>开始前提醒：</h3>
+              <p>你不用选标准答案。你每一轮都用自己的话输入，我来模拟小树可能怎么接。</p>
+            </div>
+            <button class="primary-button wide-button" type="button" id="enterRehearsal">进入预演</button>
+          </section>
+        </div>
+
+        <div class="simulation-layout hidden" id="simulationActive">
+          <section class="section">
+            <div class="rehearsal-header">
+              <h2 id="rehearsalTitle">沟通预演｜写作业前怎么开口</h2>
+              <p id="rehearsalStatus">当前状态：小树有点烦，防御比较高</p>
+            </div>
+          </section>
+
+          <section class="section">
+            <h2 class="section-title">预演对话</h2>
+            <div class="simulation-feed" id="simulationFeed"></div>
+          </section>
+        </div>
+
+        <div class="simulation-layout hidden" id="simulationEnd">
+          <section class="section">
+            <h2 class="section-title">这次预演里，我看到的重点</h2>
+            <div class="profile-block">
+              <h3>1. 小树最容易被触发的是</h3>
+              <p>当你解释“我是怕你拖到很晚”，或者说“你每次都拖”时，他容易听成：你还是在盯他、评价他。</p>
+            </div>
+            <div class="profile-block">
+              <h3>2. 这次比较有用的方向是</h3>
+              <p>先减少“被站在旁边看着”的感觉，再谈开始。</p>
+            </div>
+            <div class="profile-block">
+              <h3>3. 现实里可以试的不是一句话，而是一段做法</h3>
+              <p>今晚如果又卡在作业开始前，可以先让他自己选第一项，你暂时离开十分钟。</p>
+            </div>
+            <div class="profile-block">
+              <h3>4. 这次还不能直接进入档案的内容</h3>
+              <p>预演里的孩子反应只是模拟，不等于真实证据。只有你今晚真的试了，并反馈小树实际怎么反应，才会更新档案。</p>
+            </div>
+            <div class="end-actions">
+              <button class="secondary-button" type="button" id="saveDirection">保存这个方向</button>
+              <button class="secondary-button" type="button" id="tryTonight">今晚试一次</button>
+              <button class="primary-button" type="button" id="restartSimulation">重新练一遍</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="page" id="page-profile" data-title="画像" data-state="观察中">
+        <div class="profile-settings-row">
+          <button class="profile-settings-button" type="button" data-open-settings aria-label="打开画像设置">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z" stroke="currentColor" stroke-width="2"/>
+              <path d="M19 13.3v-2.6l-2.1-.35a5.7 5.7 0 0 0-.55-1.34l1.24-1.74-1.86-1.86-1.74 1.24c-.43-.24-.88-.43-1.35-.56L12.3 4h-2.6l-.35 2.08c-.48.14-.93.33-1.35.56L6.26 5.4 4.4 7.26l1.24 1.74c-.24.43-.43.88-.56 1.34L3 10.7v2.6l2.08.35c.14.48.33.93.56 1.35L4.4 16.74l1.86 1.86L8 17.36c.42.24.87.43 1.35.56l.35 2.08h2.6l.35-2.08c.48-.14.93-.33 1.35-.56l1.74 1.24 1.86-1.86-1.24-1.74c.24-.42.43-.87.55-1.35L19 13.3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <section class="section">
+          <h2 class="section-title">画像数据中心</h2>
+          <div class="profile-data-grid">
+            <div class="profile-data-card">
+              <h3>动态成长画像</h3>
+              <p>记录、任务反馈和演练结果都会先成为观察线索，再进入画像更新。</p>
+            </div>
+            <div class="profile-data-card">
+              <h3>当前关注点</h3>
+              <p>作业启动困难；被催促时容易进入防御状态。</p>
+            </div>
+            <div class="profile-data-card">
+              <h3>行为模式总结</h3>
+              <p>拖延常出现在开始前，冲突多由“提醒升级为催促”触发。</p>
+            </div>
+            <div class="profile-data-card">
+              <h3>家庭互动模式</h3>
+              <p>家长越靠近监督，孩子越容易感到被评价，启动阻力上升。</p>
+            </div>
+            <div class="profile-data-card">
+              <h3>有效策略</h3>
+              <p>先让孩子选择第一步，家长短暂离开十分钟，再回来确认进展。</p>
+            </div>
+            <div class="profile-data-card">
+              <h3>待验证假设</h3>
+              <p>孩子并非不愿意写，而是对开始后的检查和评价有预期压力。</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">信息闭环</h2>
+          <div class="flow-card">
+            <div class="flow-steps" aria-label="信息从交流流向画像的闭环">
+              <div class="flow-step">日常交流：输入事件</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">AI 结构化理解：复述与确认</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">情境演练 / 任务生成</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">现实执行：家庭行为</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">任务反馈：完成度与孩子反应</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">动态画像更新</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-step">下一轮建议生成</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Current Insight</h2>
+          <div class="profile-block">
+            <h3>当前最需要关注：</h3>
+            <ul>
+              <li>作业启动困难</li>
+              <li>情绪冲突频率较高</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">4-layer Model</h2>
+          <div class="layer-grid">
+            <div class="profile-block">
+              <p class="layer-title">Layer 1：孩子状态</p>
+              <div class="layer-tags">
+                <span class="tag">情绪</span>
+                <span class="tag">学习</span>
+                <span class="tag">行为</span>
+              </div>
+            </div>
+            <div class="profile-block">
+              <p class="layer-title">Layer 2：关系</p>
+              <div class="layer-tags">
+                <span class="tag">父母</span>
+                <span class="tag">学校</span>
+                <span class="tag">同伴</span>
+              </div>
+            </div>
+            <div class="profile-block">
+              <p class="layer-title">Layer 3：家庭系统</p>
+              <div class="layer-tags">
+                <span class="tag">规则</span>
+                <span class="tag">冲突方式</span>
+              </div>
+            </div>
+            <div class="profile-block">
+              <p class="layer-title">Layer 4：长期变化</p>
+              <div class="layer-tags">
+                <span class="tag">事件</span>
+                <span class="tag">环境变化</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Trend / Changes</h2>
+          <div class="profile-block">
+            <h3>最近变化：</h3>
+            <ul>
+              <li>冲突次数减少</li>
+              <li>作业启动稍改善</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2 class="section-title">Uncertainty Notes</h2>
+          <div class="profile-block">
+            <h3>以下判断仍在观察中</h3>
+            <p class="hint-text">当前画像只基于已记录交流和任务反馈，不作为定论。</p>
+          </div>
+        </section>
+      </section>
+    </section>
+
+    <section class="recording-panel" id="recordingPanel" aria-live="assertive">
+      <div class="recording-card">
+        <div class="wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <p class="recording-text">松手发送，上滑取消</p>
+        <p class="cancel-hint" id="cancelHint">继续按住说话</p>
+      </div>
+    </section>
+
+    <section class="input-zone" id="inputZone">
+      <div class="input-bar voice-mode" id="voiceBar">
+        <button class="hold-button" id="holdToTalk" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          按住说话
+        </button>
+        <button class="mode-button" id="toTextMode" type="button" aria-label="切换到文字输入">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M6 11h.01M10 11h.01M14 11h.01M18 11h.01M7 15h10M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="input-bar text-mode hidden" id="textBar">
+        <button class="mode-button" id="toVoiceMode" type="button" aria-label="切换到语音输入">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="text-input-wrap">
+          <textarea class="text-input" id="messageInput" rows="1" placeholder="随时和我聊聊孩子的情况……"></textarea>
+        </div>
+        <button class="send-button" id="sendButton" type="button" aria-label="发送" disabled>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <section class="bottom-tabs-wrap">
+      <nav class="bottom-tabs" aria-label="底部导航">
+        <button class="tab-button active" type="button" data-tab="chat" aria-current="page">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 5.4c-5.25 0-9.35 3.45-9.35 7.78 0 2.18 1.05 4.12 2.78 5.52l-.6 3.9 3.78-2.12c1.04.34 2.18.52 3.39.52 5.25 0 9.35-3.45 9.35-7.82S19.25 5.4 14 5.4z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M10.5 13.15h.01M14 13.15h.01M17.5 13.15h.01" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/>
+          </svg>
+          <span class="tab-label">交流</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="tasks">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M10.2 5.9H8.1a2.2 2.2 0 0 0-2.2 2.2v14.1a2.2 2.2 0 0 0 2.2 2.2h11.8a2.2 2.2 0 0 0 2.2-2.2V8.1a2.2 2.2 0 0 0-2.2-2.2h-2.1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11.3 3.7h5.4c.6 0 1.1.5 1.1 1.1v2.6c0 .6-.5 1.1-1.1 1.1h-5.4c-.6 0-1.1-.5-1.1-1.1V4.8c0-.6.5-1.1 1.1-1.1z" stroke="currentColor" stroke-linejoin="round"/>
+            <path d="M10.4 15.1l2.55 2.55 5-5.25" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="tab-label">任务</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="simulation">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M12.9 4.2l1.35 4.15a3.2 3.2 0 0 0 2.02 2.02l4.15 1.35-4.15 1.35a3.2 3.2 0 0 0-2.02 2.02l-1.35 4.15-1.35-4.15a3.2 3.2 0 0 0-2.02-2.02l-4.15-1.35 4.15-1.35a3.2 3.2 0 0 0 2.02-2.02L12.9 4.2z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M20.65 16.3l.72 2.15a1.6 1.6 0 0 0 1.02 1.02l2.15.72-2.15.72a1.6 1.6 0 0 0-1.02 1.02l-.72 2.15-.72-2.15a1.6 1.6 0 0 0-1.02-1.02l-2.15-.72 2.15-.72a1.6 1.6 0 0 0 1.02-1.02l.72-2.15z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="tab-label">预演</span>
+        </button>
+        <button class="tab-button" type="button" data-tab="profile">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path d="M14 24.4c5.74 0 10.4-4.66 10.4-10.4S19.74 3.6 14 3.6 3.6 8.26 3.6 14 8.26 24.4 14 24.4z" stroke="currentColor"/>
+            <path d="M10.1 11.7h.01M17.9 11.7h.01" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M9.8 16.4c1.05 1.45 2.45 2.17 4.2 2.17s3.15-.72 4.2-2.17" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+          <span class="tab-label">画像</span>
+        </button>
+      </nav>
+    </section>
+
+    <section class="settings-overlay hidden" id="settingsOverlay" aria-hidden="true">
+      <button class="overlay-backdrop" type="button" id="closeSettingsBackdrop" aria-label="关闭设置"></button>
+      <section class="settings-sheet" role="dialog" aria-modal="true" aria-label="个人设置">
+        <div class="sheet-header">
+          <div>
+            <h2 class="sheet-title">设置</h2>
+            <p class="sheet-subtitle">账号、登录与基础数据管理。</p>
+          </div>
+          <button class="icon-button" type="button" id="closeSettings" aria-label="关闭设置">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="settings-grid compact-settings">
+          <div class="setting-group">
+            <h3>账号</h3>
+            <button class="setting-row" type="button">
+              <strong>当前账号</strong>
+              <span>parent@example.com</span>
+            </button>
+            <button class="setting-row" type="button">
+              <strong>切换账号</strong>
+              <span class="setting-value">进入</span>
+            </button>
+            <button class="setting-row" type="button">
+              <strong>账号安全</strong>
+              <span>手机号、密码、登录设备</span>
+            </button>
+          </div>
+
+          <div class="setting-group">
+            <h3>数据与帮助</h3>
+            <button class="setting-row" type="button">
+              <strong>隐私与数据</strong>
+              <span>导出 / 删除记录</span>
+            </button>
+            <button class="setting-row" type="button">
+              <strong>帮助与反馈</strong>
+              <span class="setting-value">提交</span>
+            </button>
+          </div>
+
+          <button class="setting-row logout-row" type="button">
+            <strong>退出登录</strong>
+            <span class="setting-value">退出</span>
+          </button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const topTitle = { textContent: "" };
+    const topState = { textContent: "" };
+    const pages = {
+      home: document.querySelector("#page-home"),
+      chat: document.querySelector("#page-chat"),
+      tasks: document.querySelector("#page-tasks"),
+      simulation: document.querySelector("#page-simulation"),
+      profile: document.querySelector("#page-profile")
+    };
+    const chatFeed = document.querySelector("#chatFeed");
+    const simulationFeed = document.querySelector("#simulationFeed");
+    const inputZone = document.querySelector("#inputZone");
+    const voiceBar = document.querySelector("#voiceBar");
+    const textBar = document.querySelector("#textBar");
+    const recordingPanel = document.querySelector("#recordingPanel");
+    const holdToTalk = document.querySelector("#holdToTalk");
+    const toTextMode = document.querySelector("#toTextMode");
+    const toVoiceMode = document.querySelector("#toVoiceMode");
+    const messageInput = document.querySelector("#messageInput");
+    const sendButton = document.querySelector("#sendButton");
+    const cancelHint = document.querySelector("#cancelHint");
+    const taskList = document.querySelector("#taskList");
+    const taskEmptyState = document.querySelector("#taskEmptyState");
+    const settingsOverlay = document.querySelector("#settingsOverlay");
+    const closeSettings = document.querySelector("#closeSettings");
+    const closeSettingsBackdrop = document.querySelector("#closeSettingsBackdrop");
+    const startFromHome = document.querySelector("#startFromHome");
+    const simulationEntry = document.querySelector("#simulationEntry");
+    const simulationConfirm = document.querySelector("#simulationConfirm");
+    const simulationActive = document.querySelector("#simulationActive");
+    const simulationEnd = document.querySelector("#simulationEnd");
+    const simulationSceneInput = document.querySelector("#simulationSceneInput");
+    const simulationSummary = document.querySelector("#simulationSummary");
+    const startSimulation = document.querySelector("#startSimulation");
+    const enterRehearsal = document.querySelector("#enterRehearsal");
+    const rehearsalTitle = document.querySelector("#rehearsalTitle");
+    const rehearsalStatus = document.querySelector("#rehearsalStatus");
+    const saveDirection = document.querySelector("#saveDirection");
+    const tryTonight = document.querySelector("#tryTonight");
+    const restartSimulation = document.querySelector("#restartSimulation");
+
+    let activeTab = "chat";
+    let recording = false;
+    let cancelRecording = false;
+    let startY = 0;
+    let selectedScenario = "写作业前怎么开口";
+    let selectedScenarioSummary = "今晚 7:40，小树已经拖了快一小时。你提醒过两次，他开始烦。你担心再拖到很晚，想让他开始写作业。";
+    let simulationStep = "entry";
+    let rehearsalRound = 0;
+    let selectedTaskId = null;
+    let taskCounter = 3;
+    let baseViewportHeight = window.innerHeight;
+
+    function pageTopState(tab = activeTab) {
+      return pages[tab]?.dataset.state || "";
+    }
+
+    function resetTopState() {
+      topState.textContent = pageTopState();
+    }
+
+    function openSettings() {
+      settingsOverlay.classList.remove("hidden");
+      settingsOverlay.setAttribute("aria-hidden", "false");
+    }
+
+    function closeSettingsPanel() {
+      settingsOverlay.classList.add("hidden");
+      settingsOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    function isTextEditing() {
+      const active = document.activeElement;
+      return active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA");
+    }
+
+    function updateKeyboardOffset() {
+      if (!isTextEditing()) {
+        baseViewportHeight = Math.max(baseViewportHeight, window.innerHeight);
+        document.documentElement.style.setProperty("--keyboard-offset", "0px");
+        document.body.classList.remove("keyboard-open");
+        return;
+      }
+
+      const viewport = window.visualViewport;
+      const currentHeight = viewport ? viewport.height : window.innerHeight;
+      const currentTop = viewport ? viewport.offsetTop : 0;
+      const keyboardOffset = Math.max(0, baseViewportHeight - currentHeight - currentTop);
+
+      document.documentElement.style.setProperty("--keyboard-offset", `${keyboardOffset}px`);
+      document.body.classList.toggle("keyboard-open", keyboardOffset > 80);
+    }
+
+    const tasks = [
+      {
+        id: 1,
+        title: "今晚先选一题开始，不讨论全部写完",
+        source: "来自：作业拖延交流",
+        status: "待执行"
+      },
+      {
+        id: 2,
+        title: "孩子爆发前，先复述他的感受",
+        source: "来自：情绪爆发交流",
+        status: "进行中"
+      }
+    ];
+
+    const profileStreamFacts = [
+      { label: "年级", text: "四年级 / 男孩" },
+      { label: "高频场景", text: "作业开始前" },
+      { label: "学习特点", text: "理解力不弱，但怕出错" },
+      { label: "互动特点", text: "提醒后容易抗拒" }
+    ];
+
+    const suggestionSets = {
+      starter: [
+        { label: "作业拖延", action: "scene-homework" },
+        { label: "情绪爆发", action: "scene-emotion" },
+        { label: "顶嘴冲突", action: "scene-talkback" },
+        { label: "手机使用", action: "scene-phone" }
+      ],
+      default: [
+        { label: "帮我看看今晚怎么处理", action: "tonight" },
+        { label: "为什么会这样", action: "why" },
+        { label: "给一个小方法", action: "method" },
+        { label: "情境演练", action: "open-simulation" },
+        { label: "模拟孩子反应", action: "simulate" }
+      ],
+      diagnosis: [
+        { label: "查看深度原因分析", action: "deep-reasons", primary: true },
+        { label: "我现在怎么开口", action: "tonight" },
+        { label: "保存为今晚任务", action: "save-task" }
+      ],
+      lowConfidence: [
+        { label: "补充现场过程", action: "focus-input", primary: true },
+        { label: "先给我一个问法", action: "prompt-line" }
+      ],
+      task: [
+        { label: "保存为任务", action: "save-task", primary: true },
+        { label: "暂时不用", action: "dismiss-task" }
+      ],
+      afterTask: [
+        { label: "换一种说法", action: "rewrite" },
+        { label: "我想先演练", action: "open-simulation" },
+        { label: "继续聊这件事", action: "continue" }
+      ],
+      simulation: [
+        { label: "我换种说法试试", action: "try-line" },
+        { label: "继续模拟", action: "simulate-more" },
+        { label: "保存这个说法", action: "save-task", primary: true }
+      ]
+    };
+
+    function scrollToBottom(container) {
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function createSuggestionStrip(items) {
+      const strip = document.createElement("div");
+      strip.className = "suggestion-strip";
+
+      items.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = item.primary ? "pill primary" : "pill";
+        button.textContent = item.label;
+        button.addEventListener("click", () => handleChatSuggestion(item));
+        strip.appendChild(button);
+      });
+
+      return strip;
+    }
+
+    function appendParagraphs(container, value) {
+      const paragraphs = Array.isArray(value) ? value : String(value).split(/\n+/);
+      paragraphs.filter(Boolean).forEach((paragraph) => {
+        const p = document.createElement("p");
+        p.textContent = paragraph;
+        container.appendChild(p);
+      });
+    }
+
+    function appendSectionContent(container, section) {
+      if (section.text) appendParagraphs(container, section.text);
+      if (section.paragraphs) appendParagraphs(container, section.paragraphs);
+
+      if (section.items && section.items.length) {
+        const list = document.createElement("ul");
+        list.className = "bubble-list";
+        section.items.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        });
+        container.appendChild(list);
+      }
+
+      if (section.quotes && section.quotes.length) {
+        const quoteList = document.createElement("div");
+        quoteList.className = "quote-list";
+        section.quotes.forEach((quote) => {
+          const p = document.createElement("p");
+          p.className = "quote-line";
+          p.textContent = quote;
+          quoteList.appendChild(p);
+        });
+        container.appendChild(quoteList);
+      }
+
+      if (section.note) {
+        const note = document.createElement("p");
+        note.className = "section-footnote";
+        note.textContent = section.note;
+        container.appendChild(note);
+      }
+    }
+
+    function addMessage(feed, role, sections, suggestions) {
+      const row = document.createElement("div");
+      row.className = `message-row ${role}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      if (typeof sections === "string") {
+        bubble.textContent = sections;
+      } else {
+        sections.forEach((section) => {
+          const block = document.createElement("div");
+          block.className = "bubble-section";
+
+          if (section.label) {
+            const label = document.createElement("span");
+            label.className = "section-label";
+            label.textContent = section.label;
+            block.appendChild(label);
+          }
+
+          const text = document.createElement("div");
+          text.className = "section-body";
+          appendSectionContent(text, section);
+          block.appendChild(text);
+          bubble.appendChild(block);
+        });
+      }
+
+      if (suggestions && suggestions.length) {
+        bubble.appendChild(createSuggestionStrip(suggestions));
+      }
+
+      row.appendChild(bubble);
+      feed.appendChild(row);
+      scrollToBottom(feed.closest(".page") || feed);
+      return row;
+    }
+
+    function addSecondMeMessage(childText, hintTitle, hintText) {
+      const row = document.createElement("div");
+      row.className = "message-row ai";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      const childBlock = document.createElement("div");
+      childBlock.className = "bubble-section";
+
+      const childLabel = document.createElement("span");
+      childLabel.className = "section-label";
+      childLabel.textContent = "小树 SecondMe";
+      childBlock.appendChild(childLabel);
+
+      const childBody = document.createElement("div");
+      childBody.textContent = childText;
+      childBlock.appendChild(childBody);
+      bubble.appendChild(childBlock);
+
+      const hint = document.createElement("div");
+      hint.className = "hint-block";
+      hint.innerHTML = `
+        <p class="hint-block-title">${hintTitle}</p>
+        <p class="hint-block-text">${hintText}</p>
+      `;
+      bubble.appendChild(hint);
+
+      row.appendChild(bubble);
+      simulationFeed.appendChild(row);
+      scrollToBottom(pages.simulation);
+    }
+
+    function addThinking(feed, stateText) {
+      const isChatThinking = feed === chatFeed && activeTab === "chat";
+      topState.textContent = stateText || (activeTab === "simulation" ? "正在演练" : "正在结合孩子信息");
+
+      const row = document.createElement("div");
+      row.className = "message-row ai";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      if (isChatThinking) {
+        bubble.classList.add("thinking-bubble");
+        const panel = document.createElement("div");
+        panel.className = "thinking-panel";
+        panel.innerHTML = `
+          <div class="thinking-header">
+            <span class="thinking">
+              正在结合孩子的历史信息思考
+              <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            </span>
+          </div>
+        `;
+
+        const stream = document.createElement("div");
+        stream.className = "profile-stream";
+        profileStreamFacts.forEach((fact) => {
+          const chip = document.createElement("div");
+          chip.className = "profile-chip";
+          const label = document.createElement("span");
+          label.textContent = fact.label;
+          const text = document.createElement("strong");
+          text.textContent = fact.text;
+          chip.appendChild(label);
+          chip.appendChild(text);
+          stream.appendChild(chip);
+        });
+        panel.appendChild(stream);
+        bubble.appendChild(panel);
+      } else {
+        bubble.innerHTML = `
+          <span class="thinking">
+            正在生成
+            <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </span>
+        `;
+      }
+
+      row.appendChild(bubble);
+      feed.appendChild(row);
+      scrollToBottom(feed.closest(".page") || feed);
+      return row;
+    }
+
+    function respondAfterThinking(feed, factory, delay = 550) {
+      const thinkingRow = addThinking(feed);
+      window.setTimeout(() => {
+        thinkingRow.remove();
+        factory();
+        resetTopState();
+      }, delay);
+    }
+
+    function shouldUseLowConfidence(text) {
+      const normalized = text.replace(/\s/g, "");
+      const hasScene = /今天|今晚|昨天|刚刚|当时|晚上|早上|提醒|催|第一句|后来|哭|发火|说|拖|写作业|作业/.test(normalized);
+      const broadOnly = /最近|总是|经常|就是|抗拒学习|不爱学习|一说就烦|不知道/.test(normalized);
+      return normalized.length < 24 || (broadOnly && !hasScene);
+    }
+
+    function highConfidenceReplySections() {
+      return [
+        {
+          label: "深度诊断结果（高置信度）",
+          text: "这次不像单纯“不想写作业”，更像是孩子一进入熟悉的作业启动场景，就提前感到要被催、被看、被检查，于是防御先被拉高。"
+        },
+        {
+          label: "历史信息思考",
+          items: [
+            "你之前提到过，几次冲突都集中在作业开始前。",
+            "一旦真正开始做，他通常还能继续，并不是完全做不了。",
+            "提醒次数越多，他越容易烦躁、顶回去或哭。",
+            "错题检查和被纠正，是他压力比较大的环节。"
+          ]
+        },
+        {
+          label: "判断依据",
+          items: [
+            "过去多次出现“催促 → 抗拒升级 → 被盯住 → 情绪爆发 → 才开始写”的循环，说明这不是一次孤立反应。",
+            "冲突主要发生在启动阶段，而不是写到一半，说明卡点更可能在“进入作业状态”这一关。",
+            "他开始后的表现并没有完全崩掉，说明重点不一定是能力问题，而是开始前的压力预期。",
+            "他对检查和纠错敏感，容易把提醒听成评价，把靠近听成监控。"
+          ]
+        },
+        {
+          label: "结合孩子画像的分析",
+          paragraphs: [
+            "对你来说，你可能只是提醒他回到作业；但对他来说，这个提醒像是一个信号：后面那套熟悉流程又要开始了。被催、被看、被检查、被纠正、被评价，这些体验会一起涌上来。",
+            "所以他哭或顶嘴，未必是在否定你，也未必是完全逃避学习。更像是他在用情绪把现场先停下来，避免自己再次进入那个让他感到没有选择权、容易出错、也容易被评价的过程。",
+            "真正需要先改变的，不是立刻讲道理让他明白作业重要，而是把“开始写作业”这个入口变小、变轻，让他重新体验：开始不等于马上被盯住。"
+          ]
+        },
+        {
+          label: "孩子可能怎么想",
+          quotes: [
+            "我知道作业要写，但我一开始，后面肯定还有很多事。",
+            "你会看我写得快不快、对不对，会不会又哪里错了。",
+            "我不是完全不想写，我只是不想一开始就进入那个过程。",
+            "要是我拖一下、哭一下，说不定你就不会那么盯我了。"
+          ],
+          note: "以上不是孩子原话，而是基于过往情境和本次表现的推测。"
+        },
+        {
+          label: "你可以尝试改变的点",
+          paragraphs: [
+            "今晚先只改“开始写作业”的入口。不要一上来就检查、纠正或评价，也不要把全部作业摊开谈。",
+            "可以把目标缩到一个很小的开始动作：只选一项最容易的作业，先做 5 分钟。重点不是降低要求，而是先让入口不爆，后面才有空间谈效率和质量。"
+          ]
+        }
+      ];
+    }
+
+    function lowConfidenceReplySections() {
+      return [
+        {
+          label: "目前有几个可能方向",
+          items: [
+            "方向一：他可能是在抗拒某一项具体任务，比如数学、英语或作文反复带来挫败感。",
+            "方向二：他可能是在抗拒学习流程启动，一被提醒就预期到后面会被催、被盯、被纠正。",
+            "方向三：他可能对休息或屏幕时间被打断很敏感，爆发点在从放松状态切回学习。"
+          ]
+        },
+        {
+          label: "这次更像是",
+          text: "目前信息还不足以直接判断为学习动力下降。关键要区分：他是在抗拒任务内容，还是在抗拒学习过程开始的那个时刻。两种情况后面的处理完全不一样。"
+        },
+        {
+          label: "追问",
+          paragraphs: [
+            "现在最需要知道的不是“他有没有在学”，而是他从正常状态变烦的那个转折点。请尽量按顺序补充现场。"
+          ],
+          items: [
+            "当时他正在做什么？",
+            "你第一句话是怎么说的？",
+            "他的第一反应是什么？",
+            "后来是哪一步让情绪升级了？"
+          ],
+          note: "可以讲得乱一点、长一点，这会直接影响后面判断。"
+        }
+      ];
+    }
+
+    function deepReasonSections() {
+      return [
+        {
+          label: "可能的深层原因（不只表面行为）",
+          paragraphs: [
+            "1. 他可能并不是主要在抗拒作业本身，而是在抗拒“作业开始后会发生的事”。作业对他来说，可能已经不只是写字或算题，而是一连串被盯、被提醒、被纠正、被催赶、气氛变紧张的入口。",
+            "2. 反复提醒可能已经变成他大脑里的信号：整个压力流程要开始了。提醒本身不再只是信息，而会触发他对后续批评、比较或限制的预期，所以他先一步进入警戒和抗拒。",
+            "3. 哭可能是他在感到无力时，能找到的少数“让流程暂停一下”的方式。它不一定是故意操控，更像是在压力、羞愧、害怕和挫败混在一起时发出的求助。"
+          ]
+        },
+        {
+          label: "继续看这周时，可以重点补充",
+          items: [
+            "哪几天是在作业开始前爆发，哪几天是在检查纠错时爆发。",
+            "他最容易被哪句话点燃：催时间、问进度、指出错误，还是比较别人。",
+            "有没有某一次入口变轻后，他反而更容易开始。"
+          ]
+        }
+      ];
+    }
+
+    function promptLineSections() {
+      return [
+        {
+          label: "可以这样补充现场",
+          text: "你不用整理得很完美，按时间顺序讲就可以。越像原话，判断越准。"
+        },
+        {
+          label: "请尽量回答这四个点",
+          items: [
+            "当时他在做什么？是在休息、看手机，还是已经坐到桌前？",
+            "你第一句话怎么说？语气是提醒、催促，还是已经有点着急？",
+            "他第一反应是什么？沉默、顶嘴、拖延、哭，还是离开现场？",
+            "后来是哪一步升级了？比如你靠近、检查、纠正、提高音量，或谈到时间。"
+          ]
+        }
+      ];
+    }
+
+    function sendChatText(text) {
+      addMessage(chatFeed, "user", text);
+      respondAfterThinking(chatFeed, () => {
+        if (shouldUseLowConfidence(text)) {
+          addMessage(chatFeed, "ai", lowConfidenceReplySections(), suggestionSets.lowConfidence);
+        } else {
+          addMessage(chatFeed, "ai", highConfidenceReplySections(), suggestionSets.diagnosis);
+        }
+      }, 900);
+    }
+
+    function simulationReplyFor(text) {
+      const normalized = text.replace(/\s/g, "");
+      const mentionsOldPattern = /每次|总是|又拖|不看着/.test(normalized);
+      const createsSpace = /不站|离开|十分钟|10分钟|最简单|选一个|选一项|先选/.test(normalized);
+      const asksFeeling = /太多|太累|太难|哪里难|不想开始|为什么不想/.test(normalized);
+      const pressesHard = /赶紧|马上|必须|别再|快点|现在就/.test(normalized);
+      const givesUpOrMocks = /随便|爱写不写|不管你了|你自己看着办/.test(normalized);
+
+      if (pressesHard) {
+        return {
+          child: "……你烦不烦。你越这样说，我越不想写。",
+          title: "这里可能触发沉默和顶回去",
+          hint: "这句话在大人听起来是在推动开始，但小树可能先听到“又要被压着做”。如果他沉默或顶回来，不一定是故意对抗，而是防御被拉高了。这里可以先把压力降一点，再把目标缩到第一小步。"
+        };
+      }
+
+      if (givesUpOrMocks) {
+        return {
+          child: "好啊，那我就不写了，反正你也觉得我写不好。",
+          title: "反讽背后还是被评价感",
+          hint: "他这句像是在顶嘴，其实可能是在用反讽保护自己。下一句如果继续较劲，会更容易升级。可以先不接他的反讽，回到一个很小的边界：今天仍然要开始，但不用你站在旁边盯着。"
+        };
+      }
+
+      if (mentionsOldPattern) {
+        return {
+          child: "那你就别管！反正我写不写你都不满意。",
+          title: "这句把他推远了",
+          hint: "这句话可能让他听成：“你以前就不行。”他现在更想证明“你别管我”，而不是回到作业本身。这里先不要继续证明他确实拖过，可以换个方向：先撤掉盯人的感觉，同时保留“作业还是要开始”的边界。"
+        };
+      }
+
+      if (createsSpace && rehearsalRound >= 2) {
+        return {
+          child: "那你别五分钟就回来，也别一直问我写到哪了。",
+          title: "这里有一点松动",
+          hint: "他已经不是完全拒绝了，而是在谈条件。这时候不要急着补一句“你看这不是能写吗”，那会重新变成评价。可以顺着他的边界接住，比如确认你会十分钟后再回来，让他先选第一项开始。你可以按自己的语气说，不用照搬。"
+        };
+      }
+
+      if (createsSpace) {
+        return {
+          child: "我不想选，我现在什么都不想写。",
+          title: "这不一定是失败",
+          hint: "他还在防御里，但已经从“你别烦我”变成了说出“我现在不想写”。下一句不要急着讲责任，也不要马上压全部作业。可以先把问题缩小一点：他现在是不想开始，还是觉得今天太多、太累、太难。你可以用自己的话问清楚。"
+        };
+      }
+
+      if (asksFeeling) {
+        return {
+          child: "就是很多，而且我一写你就过来看，我烦。",
+          title: "他开始说出具体卡点",
+          hint: "这里已经比单纯顶嘴更具体了。你可以继续顺着“很多”和“被看着”两个点问清楚，不急着马上给安排。参考方向可以是：先确认他觉得多，再让他自己挑第一小步。"
+        };
+      }
+
+      return {
+        child: "那你别一直看着我啊。你站这儿我更不想写。",
+        title: "这里还在防御里",
+        hint: "他没有先听到“妈妈是在担心”，而是先听到了“妈妈还在盯我”。如果下一句继续解释你为什么着急，他可能还是会觉得自己被管住。这里可以先把“被盯着”的感觉降下来，再谈作业怎么开始。"
+      };
+    }
+
+    function sendSimulationText(text) {
+      if (simulationStep !== "active") return;
+
+      rehearsalRound += 1;
+      addMessage(simulationFeed, "user", text);
+      respondAfterThinking(simulationFeed, () => {
+        const reply = simulationReplyFor(text);
+        addSecondMeMessage(reply.child, reply.title, reply.hint);
+        rehearsalStatus.textContent = reply.title.includes("松动")
+          ? "当前状态：小树开始谈条件，有一点松动"
+          : "当前状态：小树仍有防御，需要先降压力";
+
+        if (rehearsalRound >= 4) {
+          window.setTimeout(() => setSimulationStep("end"), 700);
+        }
+      }, 600);
+    }
+
+    function handleChatSuggestion(item) {
+      const action = item.action;
+
+      if (action.startsWith("scene-")) {
+        addMessage(chatFeed, "user", item.label);
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "我先确认一下",
+              text: `你想聊的是“${item.label}”这个场景。可以直接讲今天发生了什么，尽量包括：当时在做什么、你第一句话、孩子第一反应、哪一步开始升级。`
+            }
+          ], [
+            { label: "我来描述现场", action: "focus-input", primary: true },
+            { label: "先给我一个问法", action: "prompt-line" }
+          ]);
+        });
+        return;
+      }
+
+      if (action === "open-simulation") {
+        addMessage(chatFeed, "user", "我想先做情境演练");
+        setSimulationStep("entry");
+        switchTab("simulation");
+        return;
+      }
+
+      const userIntent = {
+        tonight: "帮我看看今晚怎么处理",
+        why: "为什么会这样",
+        method: "给一个小方法",
+        simulate: "模拟孩子反应",
+        "open-simulation": "我想先做情境演练",
+        "save-task": "保存为任务",
+        "dismiss-task": "暂时不用",
+        rewrite: "换一种说法",
+        continue: "继续聊这件事",
+        "one-line": "给我一句话",
+        deeper: "继续分析",
+        "deep-reasons": "查看深度原因分析",
+        "continue-week": "继续结合这周情况看",
+        "try-line": "我换种说法试试",
+        "simulate-more": "继续模拟",
+        "focus-input": "我来描述现场",
+        "prompt-line": "先给我一个问法"
+      };
+
+      if (action !== "focus-input") {
+        addMessage(chatFeed, "user", userIntent[action] || item.label);
+      }
+
+      if (action === "focus-input") {
+        switchToTextMode();
+        messageInput.focus();
+        return;
+      }
+
+      if (action === "prompt-line") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", promptLineSections(), suggestionSets.lowConfidence);
+        }, 650);
+        return;
+      }
+
+      if (action === "deep-reasons" || action === "why" || action === "deeper") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", deepReasonSections(), [
+            { label: "继续结合这周情况看", action: "continue-week", primary: true },
+            { label: "我现在怎么开口", action: "tonight" }
+          ]);
+        }, 800);
+        return;
+      }
+
+      if (action === "continue-week") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "这周继续看什么",
+              text: "可以继续补充最近 3 次类似场景。我会重点比较：爆发发生在开始前、检查时，还是休息被打断时。"
+            },
+            {
+              label: "记录方式",
+              items: [
+                "时间：比如晚饭后、睡前、刚放下手机。",
+                "第一句话：尽量写原话。",
+                "转折点：哪一步之后，他明显烦起来。",
+                "收尾：最后是暂停、争吵，还是完成了一部分。"
+              ]
+            }
+          ], suggestionSets.lowConfidence);
+        }, 650);
+        return;
+      }
+
+      if (action === "tonight") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "今晚可以这样处理",
+              paragraphs: [
+                "先暂停讲道理，也先不检查对错。你要保护的是“开始”这个入口，不是一次性解决全部作业。",
+                "可以说：“我不是来盯你写完。我们先选最容易的一项，只做 5 分钟。5 分钟后我再回来。”"
+              ]
+            },
+            {
+              label: "小动作",
+              items: [
+                "让孩子选第一项，而不是问“写不写”。",
+                "你先离开桌边，降低被盯着的感觉。",
+                "5 分钟内不纠错、不评价，只看他能不能进入。"
+              ]
+            }
+          ], suggestionSets.task);
+        });
+        return;
+      }
+
+      if (action === "method") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "一个小方法",
+              text: "用“二选一开始法”：不问写不写，只问先从哪一项开始。"
+            },
+            {
+              label: "使用后怎么反馈",
+              text: "试完只记录三件事：是否完成、效果如何、孩子反应。"
+            }
+          ], suggestionSets.task);
+        });
+        return;
+      }
+
+      if (action === "simulate" || action === "simulate-more") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "孩子可能反应",
+              text: "孩子可能会说：“你又来了，我不想写了。”"
+            },
+            {
+              label: "行为解释",
+              text: "这更像是对压力的防御性反应，不一定是在否定你。"
+            },
+            {
+              label: "更好说法",
+              text: "可以试试：“我不是要你马上写完，我们先选一题开始看看。”"
+            }
+          ], suggestionSets.simulation);
+        });
+        return;
+      }
+
+      if (action === "save-task") {
+        addTask("今晚先把作业入口缩到 5 分钟，不检查不评价", "来自：交流页保存");
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "已保存到任务",
+              text: "已保存：今晚先把作业入口缩到 5 分钟，不检查不评价。完成后可以到任务页反馈孩子反应。"
+            }
+          ], suggestionSets.afterTask);
+        }, 350);
+        return;
+      }
+
+      if (action === "dismiss-task") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "好的",
+              text: "这条先不保存。你可以继续补充现场细节，我会按当前这件事继续理解。"
+            }
+          ], suggestionSets.default);
+        }, 350);
+        return;
+      }
+
+      if (action === "rewrite" || action === "one-line") {
+        respondAfterThinking(chatFeed, () => {
+          addMessage(chatFeed, "ai", [
+            {
+              label: "可以这样说",
+              text: "“我看到你现在不太想开始，我们先不追求写完，先一起挑一个最容易的。”"
+            },
+            {
+              label: "提醒",
+              text: "这句话的重点是降低开始压力，不是说服孩子立刻变配合。"
+            }
+          ], suggestionSets.task);
+        });
+        return;
+      }
+
+      respondAfterThinking(chatFeed, () => {
+        addMessage(chatFeed, "ai", [
+          {
+            label: "你可以继续说",
+            text: "把你原本想对孩子说的话打出来，我来帮你看孩子可能怎么接，以及怎么调整下一句。"
+          }
+        ], [
+          { label: "打开文字输入", action: "focus-input", primary: true },
+          { label: "继续模拟", action: "simulate-more" }
+        ]);
+      });
+    }
+
+    function addTask(title, source) {
+      tasks.unshift({
+        id: taskCounter,
+        title,
+        source,
+        status: "待执行"
+      });
+      taskCounter += 1;
+      renderTasks();
+    }
+
+    function createFeedbackPanel(task) {
+      const feedback = task.feedback || {};
+      const panel = document.createElement("div");
+      panel.className = "feedback-panel task-feedback-panel";
+      panel.innerHTML = `
+        <p class="feedback-title">任务反馈</p>
+
+        <div class="feedback-group" data-feedback-group="completed">
+          <p class="feedback-question">是否完成？</p>
+          <div class="choice-row">
+            <button class="choice-button" type="button" data-value="是">是</button>
+            <button class="choice-button" type="button" data-value="否">否</button>
+          </div>
+        </div>
+
+        <div class="feedback-group" data-feedback-group="effect">
+          <p class="feedback-question">效果如何？</p>
+          <div class="choice-row">
+            <button class="choice-button" type="button" data-value="好">好</button>
+            <button class="choice-button" type="button" data-value="一般">一般</button>
+            <button class="choice-button" type="button" data-value="不好">不好</button>
+          </div>
+        </div>
+
+        <div class="feedback-group" data-feedback-group="reaction">
+          <p class="feedback-question">孩子反应？</p>
+          <div class="choice-row">
+            <button class="choice-button" type="button" data-value="改善">改善</button>
+            <button class="choice-button" type="button" data-value="无变化">无变化</button>
+            <button class="choice-button" type="button" data-value="变差">变差</button>
+          </div>
+        </div>
+
+        <div class="feedback-group">
+          <p class="feedback-question">可选：补充一句</p>
+          <textarea class="feedback-note" placeholder="只记录结果，不编辑任务内容"></textarea>
+        </div>
+      `;
+
+      panel.querySelectorAll(".feedback-group").forEach((group) => {
+        const key = group.dataset.feedbackGroup;
+        if (key && feedback[key]) {
+          group.querySelectorAll(".choice-button").forEach((button) => {
+            button.classList.toggle("selected", button.dataset.value === feedback[key]);
+          });
+        }
+
+        group.addEventListener("click", (event) => {
+          const target = event.target.closest(".choice-button");
+          if (!target) return;
+          if (!task.feedback) task.feedback = {};
+          if (key) task.feedback[key] = target.dataset.value;
+          if (key === "completed") {
+            task.status = target.dataset.value === "是" ? "已完成" : "进行中";
+            const statusText = panel.closest(".task-item")?.querySelector(".status-text");
+            if (statusText) statusText.textContent = task.status;
+          }
+          group.querySelectorAll(".choice-button").forEach((button) => {
+            button.classList.toggle("selected", button === target);
+          });
+        });
+      });
+
+      const note = panel.querySelector(".feedback-note");
+      note.value = feedback.note || "";
+      note.addEventListener("input", () => {
+        if (!task.feedback) task.feedback = {};
+        task.feedback.note = note.value;
+      });
+
+      return panel;
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = "";
+      taskEmptyState.classList.toggle("hidden", tasks.length > 0);
+
+      tasks.forEach((task) => {
+        const item = document.createElement("div");
+        const isOpen = task.id === selectedTaskId;
+        item.className = "task-item";
+
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = isOpen ? "task-card selected" : "task-card";
+        card.setAttribute("aria-expanded", String(isOpen));
+        card.innerHTML = `
+          <span class="task-title">${task.title}</span>
+          <span class="task-source">${task.source}</span>
+          <span class="task-meta">
+            <span>点击后只反馈，不编辑</span>
+            <span class="status-tag">
+              <span class="status-text">${task.status}</span>
+              <span class="status-caret ${isOpen ? "down" : "up"}" aria-hidden="true"></span>
+            </span>
+          </span>
+        `;
+        card.addEventListener("click", () => openFeedback(task.id));
+        item.appendChild(card);
+
+        if (isOpen) {
+          item.appendChild(createFeedbackPanel(task));
+        }
+
+        taskList.appendChild(item);
+      });
+    }
+
+    function openFeedback(taskId) {
+      selectedTaskId = selectedTaskId === taskId ? null : taskId;
+      renderTasks();
+    }
+
+    function syncInputVisibility() {
+      const needsInput = activeTab === "chat" || (activeTab === "simulation" && simulationStep === "active");
+      inputZone.classList.toggle("hidden", !needsInput);
+      recordingPanel.classList.remove("active");
+
+      if (!needsInput) {
+        messageInput.blur();
+      }
+
+      if (activeTab === "chat") {
+        messageInput.placeholder = "随时和我聊聊孩子的情况……";
+      } else if (activeTab === "simulation") {
+        messageInput.placeholder = "你想怎么接？输入你真实想说的话……";
+      }
+
+      updateKeyboardOffset();
+    }
+
+    function setSimulationStep(step) {
+      simulationStep = step;
+      simulationEntry.classList.toggle("hidden", step !== "entry");
+      simulationConfirm.classList.toggle("hidden", step !== "confirm");
+      simulationActive.classList.toggle("hidden", step !== "active");
+      simulationEnd.classList.toggle("hidden", step !== "end");
+      syncInputVisibility();
+      resetTopState();
+      pages.simulation.scrollTop = 0;
+    }
+
+    function startSimulationFlow() {
+      const customText = selectedScenario === "自定义场景" ? simulationSceneInput.value.trim() : "";
+      selectedScenarioSummary = customText || selectedScenarioSummary;
+      simulationSummary.textContent = selectedScenarioSummary;
+      setSimulationStep("confirm");
+    }
+
+    function enterRehearsalFlow() {
+      rehearsalRound = 0;
+      simulationFeed.innerHTML = "";
+      rehearsalTitle.textContent = `沟通预演｜${selectedScenario}`;
+      rehearsalStatus.textContent = "当前状态：小树有点烦，防御比较高";
+      setSimulationStep("active");
+      switchToTextMode();
+      addSecondMeMessage(
+        "你别催我行不行，我又不是不写。",
+        "他可能是这样听到的",
+        "他现在不一定是在认真回答“什么时候写”，更像是在把你推开。对他来说，“你催我”可能意味着后面又要开始被盯、被改、被评价。"
+      );
+    }
+
+    function restartSimulationFlow() {
+      simulationSceneInput.value = "";
+      selectedScenario = "写作业前怎么开口";
+      selectedScenarioSummary = "今晚 7:40，小树已经拖了快一小时。你提醒过两次，他开始烦。你担心再拖到很晚，想让他开始写作业。";
+      document.querySelectorAll("[data-scenario]").forEach((item) => {
+        item.classList.toggle("active", item.dataset.scenario === selectedScenario);
+      });
+      setSimulationStep("entry");
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      Object.entries(pages).forEach(([key, page]) => {
+        page.classList.remove("page-entering");
+        page.classList.toggle("active", key === tab);
+      });
+
+      document.querySelectorAll(".tab-button").forEach((button) => {
+        const active = button.dataset.tab === tab;
+        button.classList.toggle("active", active);
+        button.toggleAttribute("aria-current", active);
+      });
+
+      const page = pages[tab];
+      topTitle.textContent = page.dataset.title;
+      resetTopState();
+      syncInputVisibility();
+      page.scrollTop = 0;
+      window.requestAnimationFrame(() => {
+        page.classList.add("page-entering");
+        window.setTimeout(() => {
+          page.classList.remove("page-entering");
+        }, 520);
+      });
+    }
+
+    function switchToTextMode() {
+      voiceBar.classList.add("hidden");
+      textBar.classList.remove("hidden");
+      recordingPanel.classList.remove("active");
+      topState.textContent = activeTab === "simulation" ? "输入说法" : "继续描述";
+      window.setTimeout(updateKeyboardOffset, 0);
+    }
+
+    function switchToVoiceMode() {
+      textBar.classList.add("hidden");
+      voiceBar.classList.remove("hidden");
+      messageInput.blur();
+      resetTopState();
+      updateKeyboardOffset();
+    }
+
+    function sendInputText() {
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      messageInput.value = "";
+      sendButton.disabled = true;
+
+      if (activeTab === "simulation") {
+        sendSimulationText(text);
+      } else {
+        sendChatText(text);
+      }
+    }
+
+    function startRecording(event) {
+      if (activeTab !== "chat" && !(activeTab === "simulation" && simulationStep === "active")) return;
+
+      recording = true;
+      cancelRecording = false;
+      startY = event.touches ? event.touches[0].clientY : event.clientY;
+      recordingPanel.classList.add("active");
+      cancelHint.textContent = "继续按住说话";
+      topState.textContent = "录音中";
+    }
+
+    function moveRecording(event) {
+      if (!recording) return;
+      const currentY = event.touches ? event.touches[0].clientY : event.clientY;
+      cancelRecording = startY - currentY > 48;
+      cancelHint.textContent = cancelRecording ? "松手取消本次录音" : "继续按住说话";
+    }
+
+    function stopRecording() {
+      if (!recording) return;
+
+      recording = false;
+      recordingPanel.classList.remove("active");
+
+      if (cancelRecording) {
+        resetTopState();
+        cancelRecording = false;
+        return;
+      }
+
+      if (activeTab === "simulation") {
+        sendSimulationText("我想这样说：你能不能别再拖了，赶紧开始。");
+      } else {
+        sendChatText("孩子今天写作业一直拖，我催了几次，他突然发火说不想写了。");
+      }
+    }
+
+    document.querySelectorAll(".tab-button").forEach((button) => {
+      button.addEventListener("click", () => switchTab(button.dataset.tab));
+    });
+
+    startFromHome.addEventListener("click", () => switchTab("chat"));
+
+    document.querySelectorAll("[data-open-settings]").forEach((button) => {
+      button.addEventListener("click", openSettings);
+    });
+    closeSettings.addEventListener("click", closeSettingsPanel);
+    closeSettingsBackdrop.addEventListener("click", closeSettingsPanel);
+
+    document.querySelectorAll("[data-scenario]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedScenario = button.dataset.scenario;
+        selectedScenarioSummary = button.dataset.summary;
+        document.querySelectorAll("[data-scenario]").forEach((item) => {
+          item.classList.toggle("active", item === button);
+        });
+        if (selectedScenario === "自定义场景") {
+          simulationSceneInput.focus();
+        }
+      });
+    });
+
+    startSimulation.addEventListener("click", startSimulationFlow);
+    enterRehearsal.addEventListener("click", enterRehearsalFlow);
+    restartSimulation.addEventListener("click", restartSimulationFlow);
+    saveDirection.addEventListener("click", () => {
+      addTask("今晚先减少被盯着的感觉，再谈开始第一步", "来自：沟通预演");
+      switchTab("tasks");
+    });
+    tryTonight.addEventListener("click", () => {
+      addTask("今晚试一次：让小树自己选第一项，十分钟后再回来", "来自：沟通预演");
+      switchTab("tasks");
+    });
+
+    toTextMode.addEventListener("click", () => {
+      switchToTextMode();
+      messageInput.focus();
+    });
+
+    toVoiceMode.addEventListener("click", switchToVoiceMode);
+
+    messageInput.addEventListener("input", () => {
+      sendButton.disabled = !messageInput.value.trim();
+    });
+
+    messageInput.addEventListener("focus", () => {
+      topState.textContent = activeTab === "simulation" ? "输入说法" : "继续描述";
+      window.setTimeout(updateKeyboardOffset, 60);
+    });
+
+    messageInput.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        updateKeyboardOffset();
+        resetTopState();
+      }, 120);
+    });
+
+    messageInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendInputText();
+      }
+    });
+
+    sendButton.addEventListener("click", sendInputText);
+
+    holdToTalk.addEventListener("mousedown", startRecording);
+    window.addEventListener("mousemove", moveRecording);
+    window.addEventListener("mouseup", stopRecording);
+    holdToTalk.addEventListener("touchstart", startRecording, { passive: true });
+    window.addEventListener("touchmove", moveRecording, { passive: true });
+    window.addEventListener("touchend", stopRecording);
+
+    window.addEventListener("resize", updateKeyboardOffset);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", updateKeyboardOffset);
+      window.visualViewport.addEventListener("scroll", updateKeyboardOffset);
+    }
+
+    addMessage(chatFeed, "ai", [
+      {
+        label: "你可以直接讲孩子今天发生了什么",
+        text: "尽量像讲现场一样说：当时在做什么、你第一句话怎么说、孩子第一反应是什么、后来哪一步升级了。"
+      }
+    ], suggestionSets.starter);
+
+    setSimulationStep("entry");
+    renderTasks();
+  </script>
+</body>
+</html>
